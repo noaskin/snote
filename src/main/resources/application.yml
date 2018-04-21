@@ -1,0 +1,11 @@
+# 本地配置
+
+snote:
+  path:
+    type: svn #持久化方式 SVN、GIT、LOCAL
+    url: url #本地资源文件路径
+    remote:
+      url: url
+      username: username
+      password: password
+
