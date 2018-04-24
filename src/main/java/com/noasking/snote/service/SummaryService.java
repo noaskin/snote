@@ -1,11 +1,15 @@
 package com.noasking.snote.service;
 
+import ch.qos.logback.core.util.FileUtil;
 import com.noasking.snote.persistence.PathProperties;
 import com.noasking.snote.persistence.PersistenceFactory;
 import com.noasking.snote.persistence.summary.SummaryNode;
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -42,18 +46,23 @@ public class SummaryService {
      * @param path 目录名称
      * @return
      */
-    private boolean deleteSummary(String path) {
-
+    private void deleteSummary(String path) throws IOException {
+        FileUtils.deleteDirectory(new File(properties.appendPathHeader(path)));
     }
 
     /**
-     * 新增指定目录
+     * 新增指定目录(每次只能创建一级目录)
      *
      * @param path
      * @return
      */
-    private boolean addSummary(String path) {
-
+    private boolean addSummary(String path) throws IOException {
+        File directory = new File(properties.appendPathHeader(path));
+        // 创建目录
+        FileUtils.forceMkdir(directory);
+        // 新增README文件
+        File file = new File(properties.appendPathHeader(path + File.separator + "README.md"));
+        return file.createNewFile();
     }
 
     /**
@@ -64,7 +73,8 @@ public class SummaryService {
      * @return
      */
     private boolean updateSummaryName(String path, String newname) {
-
+        File directory = new File(properties.appendPathHeader(path));
+        directory.renameTo(new File());
     }
 
 

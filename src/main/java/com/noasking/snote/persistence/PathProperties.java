@@ -4,8 +4,10 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.util.SystemPropertyUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
 
 /**
  * 文件路径参数，对应配置文件开头：snote.path
@@ -51,6 +53,14 @@ public class PathProperties {
     public void init() {
         if (!StringUtils.isEmpty(persistenceTypeValue)) {
             persistenceType = PersistenceType.valueOf(persistenceTypeValue.toUpperCase());
+        }
+    }
+
+    public String appendPathHeader(String footer) {
+        if (footer.startsWith(File.separator)) {
+            return url + footer;
+        } else {
+            return url + File.separator + footer;
         }
     }
 
