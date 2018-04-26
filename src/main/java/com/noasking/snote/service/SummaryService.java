@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,8 +37,37 @@ public class SummaryService {
     /**
      * 加载Summary
      */
-    private synchronized void reloadSummary() {
+    private void reloadSummary() {
 
+    }
+
+    private List<SummaryNode> list(File file, SummaryNode parentSummaryNode) {
+        List<SummaryNode> result = new ArrayList<>();
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
+                File readmeFile = new File(f.getPath() + File.separator + "README.md");
+                if (readmeFile.exists()) {
+                    SummaryNode node = new SummaryNode();
+                    node.setName(f.getName());
+                    node.setParent(parentSummaryNode);
+                    node.setChildren(list(f, node));
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<File> list(File file) {
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
+                File readmeFile = new File(f.getPath() + File.separator + "README.md");
+                if (readmeFile.exists()) {
+                    System.out.println(f.getPath());
+                }
+                list(f);
+            }
+        }
+        return null;
     }
 
     /**
@@ -72,10 +102,13 @@ public class SummaryService {
      * @param newname
      * @return
      */
-    private boolean updateSummaryName(String path, String newname) {
+    private void updateSummaryName(String path, String newname) {
         File directory = new File(properties.appendPathHeader(path));
-        directory.renameTo(new File());
+        directory.renameTo(new File(directory.getPath().substring(0,
+                directory.getPath().lastIndexOf(File.separator)) + File.separator + newname));
     }
+
+    private void
 
 
 }
