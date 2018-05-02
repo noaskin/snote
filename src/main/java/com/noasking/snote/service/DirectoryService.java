@@ -1,9 +1,11 @@
 package com.noasking.snote.service;
 
 import ch.qos.logback.core.util.FileUtil;
+import com.noasking.snote.config.SystemException;
 import com.noasking.snote.persistence.PathProperties;
 import com.noasking.snote.persistence.PersistenceFactory;
 import com.noasking.snote.persistence.summary.SummaryNode;
+import com.noasking.snote.utils.Const;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,7 @@ import java.util.List;
  * Summary目录处理服务
  */
 @Service
-public class SummaryService {
+public class DirectoryService {
 
     @Autowired
     private PersistenceFactory persistenceFactory;
@@ -41,11 +43,38 @@ public class SummaryService {
 
     }
 
+    /**
+     * 新增目录
+     * @param parentPath
+     * @param newName
+     * @throws IOException
+     */
+    public void addDirectory(String parentPath, String newName) throws IOException {
+        File file = new File(properties.appendPathHeader(parentPath));
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                addDirectory(parentPath + File.separator + newName);
+            } else {
+                throw new SystemException(parentPath + "是文件而不是目录");
+            }
+        } else {
+            throw new SystemException("目录不存在:" + parentPath);
+        }
+    }
+
+    /**
+     * @return
+     */
+    private boolean checkExists() {
+        return false;
+    }
+
+
     private List<SummaryNode> list(File file, SummaryNode parentSummaryNode) {
         List<SummaryNode> result = new ArrayList<>();
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
-                File readmeFile = new File(f.getPath() + File.separator + "README.md");
+                File readmeFile = new File(f.getPath() + File.separator + Const.DEFAULT_TEXT_NAME);
                 if (readmeFile.exists()) {
                     SummaryNode node = new SummaryNode();
                     node.setName(f.getName());
@@ -58,16 +87,17 @@ public class SummaryService {
     }
 
     private List<File> list(File file) {
+        List<File> result = new ArrayList<>();
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
-                File readmeFile = new File(f.getPath() + File.separator + "README.md");
+                File readmeFile = new File(f.getPath() + File.separator + Const.DEFAULT_TEXT_NAME);
                 if (readmeFile.exists()) {
-                    System.out.println(f.getPath());
+                    result.add(f);
                 }
                 list(f);
             }
         }
-        return null;
+        return result;
     }
 
     /**
@@ -76,7 +106,7 @@ public class SummaryService {
      * @param path 目录名称
      * @return
      */
-    private void deleteSummary(String path) throws IOException {
+    public void deleteSummary(String path) throws IOException {
         FileUtils.deleteDirectory(new File(properties.appendPathHeader(path)));
     }
 
@@ -86,12 +116,12 @@ public class SummaryService {
      * @param path
      * @return
      */
-    private boolean addSummary(String path) throws IOException {
+    public boolean addDirectory(String path) throws IOException {
         File directory = new File(properties.appendPathHeader(path));
         // 创建目录
         FileUtils.forceMkdir(directory);
         // 新增README文件
-        File file = new File(properties.appendPathHeader(path + File.separator + "README.md"));
+        File file = new File(properties.appendPathHeader(path + File.separator + Const.DEFAULT_TEXT_NAME));
         return file.createNewFile();
     }
 
@@ -102,13 +132,11 @@ public class SummaryService {
      * @param newname
      * @return
      */
-    private void updateSummaryName(String path, String newname) {
+    public void updateDirectoryName(String path, String newname) {
         File directory = new File(properties.appendPathHeader(path));
         directory.renameTo(new File(directory.getPath().substring(0,
                 directory.getPath().lastIndexOf(File.separator)) + File.separator + newname));
     }
-
-    private void
 
 
 }
