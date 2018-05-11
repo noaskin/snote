@@ -50,12 +50,6 @@
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
-        <!-- SVN 操作支持 -->
-        <dependency>
-            <groupId>org.tmatesoft.svnkit</groupId>
-            <artifactId>svnkit</artifactId>
-            <version>1.8.12</version>
-        </dependency>
     </dependencies>
 
 

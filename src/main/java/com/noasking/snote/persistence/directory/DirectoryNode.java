@@ -21,12 +21,6 @@ public class DirectoryNode {
      */
     private String path;
 
-//    /**
-//     * 父节点
-//     */
-//    @JsonIgnore
-//    private DirectoryNode parent;
-
     /**
      * 子节点，有序（LinkedList）
      */

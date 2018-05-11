@@ -2,10 +2,5 @@
 
 snote:
   path:
-    type: svn #持久化方式 SVN、GIT、LOCAL
     url: D:/tmp/snote #本地资源文件路径
-    remote:
-      url: url
-      username: username
-      password: password
 

@@ -2,7 +2,6 @@ package com.noasking.snote.service;
 
 import com.noasking.snote.config.SystemException;
 import com.noasking.snote.config.PathProperties;
-import com.noasking.snote.persistence.PersistenceFactory;
 import com.noasking.snote.persistence.directory.DirectoryNode;
 import com.noasking.snote.utils.Const;
 import org.apache.commons.io.FileUtils;
@@ -24,9 +23,6 @@ import java.util.List;
 public class DirectoryService {
 
     private static final Logger LOG = LoggerFactory.getLogger(DirectoryService.class);
-
-    @Autowired
-    private PersistenceFactory persistenceFactory;
 
     @Autowired
     private PathProperties pathProperties;
