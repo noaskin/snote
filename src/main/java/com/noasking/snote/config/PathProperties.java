@@ -1,5 +1,6 @@
-package com.noasking.snote.persistence;
+package com.noasking.snote.config;
 
+import com.noasking.snote.persistence.PersistenceType;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ public class PathProperties {
      * 本地路径(可选，默认项目路径下面的res文件夹)
      */
     @Value("${snote.path.url}")
-    private String url = "res";
+    private String url;
 
     /**
      * 远程地址(persistenceType为Local时可选,否则必填)
@@ -54,6 +55,8 @@ public class PathProperties {
         if (!StringUtils.isEmpty(persistenceTypeValue)) {
             persistenceType = PersistenceType.valueOf(persistenceTypeValue.toUpperCase());
         }
+        System.out.println(url);
+//        url = url.replaceAll("/",File.separator).replaceAll("\\\\",File.separator).trim();
     }
 
     public String appendPathHeader(String footer) {

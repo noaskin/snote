@@ -69,7 +69,7 @@ public class ManageController {
      *
      * @return
      */
-    @RequestMapping(value = "note/save", method = RequestMethod.GET)
+    @RequestMapping(value = "note/upload", method = RequestMethod.GET)
     public ResponseEntity<?> upload() {
         return null;
     }

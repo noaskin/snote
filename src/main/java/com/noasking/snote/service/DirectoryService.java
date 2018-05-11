@@ -1,13 +1,15 @@
 package com.noasking.snote.service;
 
-import ch.qos.logback.core.util.FileUtil;
 import com.noasking.snote.config.SystemException;
-import com.noasking.snote.persistence.PathProperties;
+import com.noasking.snote.config.PathProperties;
 import com.noasking.snote.persistence.PersistenceFactory;
-import com.noasking.snote.persistence.summary.SummaryNode;
+import com.noasking.snote.persistence.directory.DirectoryNode;
 import com.noasking.snote.utils.Const;
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -21,36 +23,36 @@ import java.util.List;
 @Service
 public class DirectoryService {
 
+    private static final Logger LOG = LoggerFactory.getLogger(DirectoryService.class);
+
     @Autowired
     private PersistenceFactory persistenceFactory;
 
-    /**
-     * 目录记录（缓存）
-     */
-    private List<SummaryNode> summaryNode;
-
     @Autowired
-    private PathProperties properties;
+    private PathProperties pathProperties;
 
-    public List<SummaryNode> getSummaryNode() {
-        return summaryNode;
-    }
-
-    /**
-     * 加载Summary
-     */
-    private void reloadSummary() {
-
+    @Cacheable(value = Const.CacheName.DIRECTORY_TREE)
+    public DirectoryNode getDirectoryNode() {
+        System.out.println(File.separator + "------" + pathProperties.getUrl());
+        String url = pathProperties.getUrl();
+        DirectoryNode rootNode = new DirectoryNode();
+        File file = new File(url);
+        rootNode.setPath(file.getPath());
+        rootNode.setName(file.getName());
+        rootNode.setChildren(list(file, rootNode));
+        return rootNode;
     }
 
     /**
      * 新增目录
+     *
      * @param parentPath
      * @param newName
      * @throws IOException
      */
+    @Cacheable(value = Const.CacheName.DIRECTORY_TREE, key = "directory")
     public void addDirectory(String parentPath, String newName) throws IOException {
-        File file = new File(properties.appendPathHeader(parentPath));
+        File file = new File(pathProperties.appendPathHeader(parentPath));
         if (file.exists()) {
             if (file.isDirectory()) {
                 addDirectory(parentPath + File.separator + newName);
@@ -70,16 +72,18 @@ public class DirectoryService {
     }
 
 
-    private List<SummaryNode> list(File file, SummaryNode parentSummaryNode) {
-        List<SummaryNode> result = new ArrayList<>();
+    private List<DirectoryNode> list(File file, DirectoryNode parentSummaryNode) {
+        List<DirectoryNode> result = new ArrayList<>();
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
                 File readmeFile = new File(f.getPath() + File.separator + Const.DEFAULT_TEXT_NAME);
                 if (readmeFile.exists()) {
-                    SummaryNode node = new SummaryNode();
+                    DirectoryNode node = new DirectoryNode();
                     node.setName(f.getName());
-                    node.setParent(parentSummaryNode);
+//                    node.setParent(parentSummaryNode);
+                    node.setPath(f.getPath());
                     node.setChildren(list(f, node));
+                    result.add(node);
                 }
             }
         }
@@ -107,7 +111,7 @@ public class DirectoryService {
      * @return
      */
     public void deleteSummary(String path) throws IOException {
-        FileUtils.deleteDirectory(new File(properties.appendPathHeader(path)));
+        FileUtils.deleteDirectory(new File(pathProperties.appendPathHeader(path)));
     }
 
     /**
@@ -117,11 +121,11 @@ public class DirectoryService {
      * @return
      */
     public boolean addDirectory(String path) throws IOException {
-        File directory = new File(properties.appendPathHeader(path));
+        File directory = new File(pathProperties.appendPathHeader(path));
         // 创建目录
         FileUtils.forceMkdir(directory);
         // 新增README文件
-        File file = new File(properties.appendPathHeader(path + File.separator + Const.DEFAULT_TEXT_NAME));
+        File file = new File(pathProperties.appendPathHeader(path + File.separator + Const.DEFAULT_TEXT_NAME));
         return file.createNewFile();
     }
 
@@ -133,7 +137,7 @@ public class DirectoryService {
      * @return
      */
     public void updateDirectoryName(String path, String newname) {
-        File directory = new File(properties.appendPathHeader(path));
+        File directory = new File(pathProperties.appendPathHeader(path));
         directory.renameTo(new File(directory.getPath().substring(0,
                 directory.getPath().lastIndexOf(File.separator)) + File.separator + newname));
     }

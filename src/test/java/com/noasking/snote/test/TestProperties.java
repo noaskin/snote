@@ -1,6 +1,6 @@
 package com.noasking.snote.test;
 
-import com.noasking.snote.persistence.PathProperties;
+import com.noasking.snote.config.PathProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
