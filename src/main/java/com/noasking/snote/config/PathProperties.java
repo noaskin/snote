@@ -21,6 +21,19 @@ public class PathProperties {
     @Value("${snote.path.url}")
     private String url;
 
+    private int urlLength;
+
+    @PostConstruct
+    public void init() throws Exception {
+        File file = new File(url);
+        if (file.isDirectory()) {
+            url = file.getPath();
+            urlLength = url.length();
+        } else {
+            throw new Exception("url is not directory!");
+        }
+    }
+
 
     public String appendPathHeader(String footer) {
         if (footer.startsWith(File.separator)) {

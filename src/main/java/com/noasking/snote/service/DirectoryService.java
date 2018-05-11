@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -29,42 +30,20 @@ public class DirectoryService {
 
     @Cacheable(value = Const.CacheName.DIRECTORY_TREE)
     public DirectoryNode getDirectoryNode() {
-        System.out.println(File.separator + "------" + pathProperties.getUrl());
+        LOG.info("重新加载目录树缓存！");
         String url = pathProperties.getUrl();
         DirectoryNode rootNode = new DirectoryNode();
         File file = new File(url);
-        rootNode.setPath(file.getPath());
-        rootNode.setName(file.getName());
+        rootNode.setPath(File.separator);
+        rootNode.setName("");
         rootNode.setChildren(list(file, rootNode));
         return rootNode;
     }
 
-    /**
-     * 新增目录
-     *
-     * @param parentPath
-     * @param newName
-     * @throws IOException
-     */
-    @Cacheable(value = Const.CacheName.DIRECTORY_TREE, key = "directory")
-    public void addDirectory(String parentPath, String newName) throws IOException {
-        File file = new File(pathProperties.appendPathHeader(parentPath));
-        if (file.exists()) {
-            if (file.isDirectory()) {
-                addDirectory(parentPath + File.separator + newName);
-            } else {
-                throw new SystemException(parentPath + "是文件而不是目录");
-            }
-        } else {
-            throw new SystemException("目录不存在:" + parentPath);
-        }
-    }
-
-    /**
-     * @return
-     */
-    private boolean checkExists() {
-        return false;
+    @CacheEvict(value = Const.CacheName.DIRECTORY_TREE)
+    public void clear() {
+        LOG.info("清空目录树缓存！");
+        return;
     }
 
 
@@ -77,7 +56,7 @@ public class DirectoryService {
                     DirectoryNode node = new DirectoryNode();
                     node.setName(f.getName());
 //                    node.setParent(parentSummaryNode);
-                    node.setPath(f.getPath());
+                    node.setPath(parentSummaryNode.getPath() + File.separator + f.getName());
                     node.setChildren(list(f, node));
                     result.add(node);
                 }
@@ -99,45 +78,6 @@ public class DirectoryService {
         }
         return result;
     }
-
-    /**
-     * 删除指定目录
-     *
-     * @param path 目录名称
-     * @return
-     */
-    public void deleteSummary(String path) throws IOException {
-        FileUtils.deleteDirectory(new File(pathProperties.appendPathHeader(path)));
-    }
-
-    /**
-     * 新增指定目录(每次只能创建一级目录)
-     *
-     * @param path
-     * @return
-     */
-    public boolean addDirectory(String path) throws IOException {
-        File directory = new File(pathProperties.appendPathHeader(path));
-        // 创建目录
-        FileUtils.forceMkdir(directory);
-        // 新增README文件
-        File file = new File(pathProperties.appendPathHeader(path + File.separator + Const.DEFAULT_TEXT_NAME));
-        return file.createNewFile();
-    }
-
-    /**
-     * 修改目录名称
-     *
-     * @param path
-     * @param newname
-     * @return
-     */
-    public void updateDirectoryName(String path, String newname) {
-        File directory = new File(pathProperties.appendPathHeader(path));
-        directory.renameTo(new File(directory.getPath().substring(0,
-                directory.getPath().lastIndexOf(File.separator)) + File.separator + newname));
-    }
-
 
 }
 
