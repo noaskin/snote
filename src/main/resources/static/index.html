@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style></style>
+    <link rel="stylesheet" type="text/css" href="./plugins/editormd/editormd.css">
+    <link rel="stylesheet" type="text/css" href="./plugins/editormd/editormd.preview.css">
+    <link rel="stylesheet" type="text/css" href="./css/snote.css">
+</head>
+<body>
+
+    <!-- 目录展示 -->
+    <div></div>
+
+    <!-- 文本浏览 -->
+    <div></div>
+
+    <div id="article-content">
+        <textarea id="append-test" style="display:none;" th:utext="${article.content}"></textarea>
+    </div>
+
+</body>
+<script src="./plugins/editormd/editormd.js"></script>
+<script src="./js/jquery.min.js"></script>
+<script src="./js/snote.js"></script>
+
+</html>
