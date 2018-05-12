@@ -1,4 +1,4 @@
-package framework.file;
+package com.noasking.snote.test;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -139,7 +139,6 @@ public class FileOperateTest {
         }
     }
 
-    @Test
     public void testFile(){
 
     }

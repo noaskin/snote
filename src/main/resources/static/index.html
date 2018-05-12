@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title></title>
     <style></style>
-    <link rel="stylesheet" type="text/css" href="./plugins/editormd/editormd.css">
+    <!--<link rel="stylesheet" type="text/css" href="./plugins/editormd/editormd.css">-->
     <link rel="stylesheet" type="text/css" href="./plugins/editormd/editormd.preview.css">
     <link rel="stylesheet" type="text/css" href="./css/snote.css">
 </head>
@@ -16,13 +16,64 @@
     <!-- 文本浏览 -->
     <div></div>
 
+    <!--<div id="article-content">-->
+        <!--<textarea id="append-test" style="display:none;" th:utext="${article.content}"></textarea>-->
+    <!--</div>-->
     <div id="article-content">
-        <textarea id="append-test" style="display:none;" th:utext="${article.content}"></textarea>
+        <textarea id="append-test" style="display:none;">
+        </textarea>
     </div>
 
 </body>
-<script src="./plugins/editormd/editormd.js"></script>
+
+<script type="application/javascript">
+    /**
+     * 修改URL参数
+     */
+    function changeURLArg(url,arg,arg_val){
+        var pattern=arg+'=([^&]*)';
+        var replaceText=arg+'='+arg_val;
+        if(url.match(pattern)){
+            var tmp='/('+ arg+'=)([^&]*)/gi';
+            tmp=url.replace(eval(tmp),replaceText);
+            return tmp;
+        }else{
+            if(url.match('[\?]')){
+                return url+'&'+replaceText;
+            }else{
+                return url+'?'+replaceText;
+            }
+        }
+        return url+'\n'+arg+'\n'+arg_val;
+    }
+
+    /**
+     * 获取URL参数，主要是路径
+     * @param name
+     * @returns {*}
+     * @constructor
+     */
+    function GetQueryString(name)
+    {
+        var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r!=null)return  unescape(r[2]); return null;
+    }
+
+
+</script>
+
 <script src="./js/jquery.min.js"></script>
+
+<script src="./lib/marked.min.js"></script>
+<script src="./lib/prettify.min.js"></script>
+
+<script src="./lib/raphael.min.js"></script>
+<script src="./lib/underscore.min.js"></script>
+<script src="./lib/sequence-diagram.min.js"></script>
+<script src="./lib/flowchart.min.js"></script>
+<script src="./lib/jquery.flowchart.min.js"></script>
+<script src="./plugins/editormd/editormd.js"></script>
 <script src="./js/snote.js"></script>
 
 </html>

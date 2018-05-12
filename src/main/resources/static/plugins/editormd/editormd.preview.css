@@ -20,8 +20,8 @@
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url("http://of8rkrh1w.bkt.clouddn.com//editormd/fonts/fontawesome-webfont.eot");
-  src: url("http://of8rkrh1w.bkt.clouddn.com//editormd/fontawesome-webfont.eot") format("embedded-opentype"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/fontawesome-webfont.woff2") format("woff2"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/fontawesome-webfont.woff") format("woff"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/fontawesome-webfont.ttf") format("truetype"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/fontawesome-webfont.svg#fontawesomeregular") format("svg");
+  src: url("../fonts/fontawesome-webfont.eot?v=4.3.0");
+  src: url("../fonts/fontawesome-webfont.eot?#iefix&v=4.3.0") format("embedded-opentype"), url("../fonts/fontawesome-webfont.woff2?v=4.3.0") format("woff2"), url("../fonts/fontawesome-webfont.woff?v=4.3.0") format("woff"), url("../fonts/fontawesome-webfont.ttf?v=4.3.0") format("truetype"), url("../fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -2364,8 +2364,8 @@
 /*! prefixes.scss v0.1.0 | Author: Pandao | https://github.com/pandao/prefixes.scss | MIT license | Copyright (c) 2015 */
 @font-face {
   font-family: 'editormd-logo';
-  src: url("http://of8rkrh1w.bkt.clouddn.com//editormd/editormd-logo.eot?-5y8q6h");
-  src: url(".http://of8rkrh1w.bkt.clouddn.com//editormd/editormd-logo.eot?#iefix-5y8q6h") format("embedded-opentype"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/editormd-logo.woff?-5y8q6h") format("woff"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/editormd-logo.ttf?-5y8q6h") format("truetype"), url("http://of8rkrh1w.bkt.clouddn.com//editormd/editormd-logo.svg?-5y8q6h#icomoon") format("svg");
+  src: url("../fonts/editormd-logo.eot?-5y8q6h");
+  src: url(".../fonts/editormd-logo.eot?#iefix-5y8q6h") format("embedded-opentype"), url("../fonts/editormd-logo.woff?-5y8q6h") format("woff"), url("../fonts/editormd-logo.ttf?-5y8q6h") format("truetype"), url("../fonts/editormd-logo.svg?-5y8q6h#icomoon") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -2636,13 +2636,13 @@
 
 .markdown-body code {
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .markdown-body pre {
   margin-top: 0;
   margin-bottom: 0;
-  font: 16px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .markdown-body .octicon {
@@ -3112,20 +3112,19 @@
 
 .editormd-preview-container, .editormd-html-preview {
   text-align: left;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1.6;
   padding: 20px;
   overflow: auto;
-  width: 95%;
+  width: 100%;
   background-color: #fff;
 }
 .editormd-preview-container blockquote, .editormd-html-preview blockquote {
   color: #666;
-  border-left: 4px solid #70dd88;
-  background-color: #c1eecd;
+  border-left: 4px solid #ddd;
   padding-left: 20px;
   margin-left: 0;
-  font-size: 16px;
+  font-size: 14px;
   font-style: italic;
 }
 .editormd-preview-container p code, .editormd-html-preview p code {
@@ -3150,7 +3149,7 @@
 }
 .editormd-preview-container pre, .editormd-html-preview pre {
   border: 1px solid #ddd;
-  background: #424242;
+  background: #f6f6f6;
   padding: 10px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -3195,53 +3194,53 @@
 /*! Pretty printing styles. Used with prettify.js. */
 /* SPAN elements with the classes below are added by prettyprint. */
 .pln {
-  color: #eff2f5;
+  color: #000;
 }
 
 /* plain text */
 @media screen {
   .str {
-    color: #e6db74;
+    color: #080;
   }
 
   /* string content */
   .kwd {
-    color: #a6e22e;
+    color: #008;
   }
 
   /* a keyword */
   .com {
-    color: #887e53;
+    color: #800;
   }
 
   /* a comment */
   .typ {
-    color: #f92672;
+    color: #606;
   }
 
   /* a type name */
   .lit {
-    color: #64c6a1;
+    color: #066;
   }
 
   /* a literal value */
   /* punctuation, lisp open bracket, lisp close bracket */
   .pun, .opn, .clo {
-    color: #9c9c00;
+    color: #660;
   }
 
   .tag {
-    color: #f92672;
+    color: #008;
   }
 
   /* a markup tag name */
   .atn {
-    color: #345eb1;
+    color: #606;
   }
 
   /* a markup attribute name */
   .atv {
-    color: #e6db74;
+    color: #080;
   }
 
   /* a markup attribute value */
@@ -3259,16 +3258,16 @@
 /* Use higher contrast and text-weight for printable form. */
 @media print, projection {
   .str {
-    color: #e6db74;
+    color: #060;
   }
 
   .kwd {
-    color: #a6e22e;
+    color: #006;
     font-weight: bold;
   }
 
   .com {
-    color: #756857;
+    color: #600;
     font-style: italic;
   }
 
@@ -3328,13 +3327,12 @@ li.L3,
 li.L5,
 li.L7,
 li.L9 {
-  background: #424242;
+  background: #eee;
 }
 
 .editormd-preview-container pre.prettyprint, .editormd-html-preview pre.prettyprint {
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 20px;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
