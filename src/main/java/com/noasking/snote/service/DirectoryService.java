@@ -34,7 +34,7 @@ public class DirectoryService {
         String url = pathProperties.getUrl();
         DirectoryNode rootNode = new DirectoryNode();
         File file = new File(url);
-        rootNode.setPath(File.separator);
+        rootNode.setPath(Const.FILE_SEPARATOR);
         rootNode.setName("");
         rootNode.setChildren(list(file, rootNode));
         return rootNode;
@@ -51,12 +51,16 @@ public class DirectoryService {
         List<DirectoryNode> result = new ArrayList<>();
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
-                File readmeFile = new File(f.getPath() + File.separator + Const.DEFAULT_TEXT_NAME);
+                File readmeFile = new File(f.getPath() + Const.FILE_SEPARATOR + Const.DEFAULT_TEXT_NAME);
                 if (readmeFile.exists()) {
                     DirectoryNode node = new DirectoryNode();
                     node.setName(f.getName());
 //                    node.setParent(parentSummaryNode);
-                    node.setPath(parentSummaryNode.getPath() + File.separator + f.getName());
+                    if(Const.FILE_SEPARATOR.equals(parentSummaryNode.getPath())){
+                        node.setPath(Const.FILE_SEPARATOR + f.getName());
+                    }else{
+                        node.setPath(parentSummaryNode.getPath() + Const.FILE_SEPARATOR + f.getName());
+                    }
                     node.setChildren(list(f, node));
                     result.add(node);
                 }
@@ -69,7 +73,7 @@ public class DirectoryService {
         List<File> result = new ArrayList<>();
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
-                File readmeFile = new File(f.getPath() + File.separator + Const.DEFAULT_TEXT_NAME);
+                File readmeFile = new File(f.getPath() + Const.FILE_SEPARATOR + Const.DEFAULT_TEXT_NAME);
                 if (readmeFile.exists()) {
                     result.add(f);
                 }

@@ -2,5 +2,5 @@
 
 snote:
   path:
-    url: D:/tmp/snote #本地资源文件路径
+    url: D:/var/snote #本地资源文件路径
 
