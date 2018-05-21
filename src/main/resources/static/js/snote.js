@@ -34,14 +34,14 @@ $(function () {
  * @param path 文章路径
  */
 function changeArticle(path) {
-    $("#" + getIdByPath(glogalPath)).addClass("m-menu__item--active"); // 移除上一篇文章的样式
+    $("#" + getIdByPath(glogalPath)).removeClass("m-menu__item--active"); // 移除上一篇文章的样式
     if (document.getElementById(getIdByPath(path)) != null) { //如果目录存在
         $("#" + getIdByPath(path)).addClass("m-menu__item--active");
     } else {
         path = "/"; // 目录不存在，切换到根目录
         $("#D").addClass("m-menu__item--active");
     }
-    chageMarkdown(path);
+    changeMarkdown(path);
     glogalPath = path; //修改全局
 }
 
@@ -49,13 +49,14 @@ function changeArticle(path) {
  * 修改markdown文本内容
  * @param path
  */
-function chageMarkdown(path) {
+function changeMarkdown(path) {
     if (path.indexOf("/") == 0) {
         path = path.replace("/", "");
     }
     if (path.length > 0) {
         path += "/";
     }
+    $("#article-content").text("");
     $.get(path + "README.md", function (md) {
         var markdownView;
         markdownView = editormd.markdownToHTML("article-content", {
@@ -77,13 +78,12 @@ function chageMarkdown(path) {
 function initDirectory() {
     $.get("/note/list", function (result) {
         name = result.name;
-        index++;
-        localStorage.setItem("cache1_" + "divId_" + index, data.path);
-        localStorage.setItem("cache2_" + data.path, "divId_" + index);
         var dirHtml = "<li class=\"m-menu__section m-menu__section--first\" id=\"" + initMap(result) + "\" >\n" +
-            "<h4 class=\"m-menu__section-text\">\n" +
-            "Departments\n" +
+            "<a onclick=\"changeArticle('/')\"" +
+            "<h4 class=\"m-menu__section-text\">" +
+            result.name +
             "</h4>\n" +
+            "</a>" +
             "<i class=\"m-menu__section-icon flaticon-more-v3\"></i>\n" +
             "</li>";
         for (var i in result.children) {
@@ -138,8 +138,9 @@ var idRelPath = new Map();
 var pathRelId = new Map();
 
 function initMap(path) {
-    idRelPath.put(path.id,path.path);
-    pathRelId.put(path.path,index.id);
+    idRelPath.set(path.id,path.path);
+    pathRelId.set(path.path,path.id);
+    console.log(idRelPath);
     return path.id;
 }
 
@@ -231,10 +232,11 @@ function setArticleTitle(path) {
 function setContent(path) {
     $("#content-list").html("");
     var id = getIdByPath(path);
+    console.log(id);
     var words = id.substr(2,id.length).split('_');
 
     var listHtml = "<li class=\"m-nav__item m-nav__item--home\">\n" +
-        "                                <a href=\"#\" class=\"m-nav__link m-nav__link--icon\">\n" +
+        "                                <a onclick=\"articleOnclick('D')\" class=\"m-nav__link m-nav__link--icon\">\n" +
         "                                    <i class=\"m-nav__link-icon la la-home\"></i>\n" +
         "                                </a>\n" +
         "                            </li>";
@@ -248,26 +250,22 @@ function setContent(path) {
             "                                <a onclick=\"articleOnclick('" + curId + "')\"" +
             " class=\"m-nav__link\">\n" +
             "\t\t\t\t\t\t\t\t\t\t\t<span class=\"m-nav__link-text\">\n" +
-            getPathById(curId) +
+            $("#"+curId).children("a").children("span").text() +
             "\t\t\t\t\t\t\t\t\t\t\t</span>\n" +
             "                                </a>\n" +
             "                            </li>";
+        console.log(curId);
     }
     $("#content-list").html(listHtml);
 
 
-    $("#content-title").html("");
-    $("#content-title").html(words[words.length - 1]);
+    // $("#content-title").html("");
+    // $("#content-title").html($("#"+curId).find("a").text());
 
-
-    $(jqueryId).par
-
-
-    $("#" + getIdByPath(path))
 }
 
 function articleOnclick(id) {
-    $("#" + getIdByPath(id)).children("a").click();
+    $("#" + id).children("a").click();
 }
 
 
