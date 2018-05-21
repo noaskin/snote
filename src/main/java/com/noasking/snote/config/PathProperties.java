@@ -23,6 +23,9 @@ public class PathProperties {
 
     private int urlLength;
 
+    @Value("${snote.name}")
+    private String name;
+
     @PostConstruct
     public void init() throws Exception {
         File file = new File(url);

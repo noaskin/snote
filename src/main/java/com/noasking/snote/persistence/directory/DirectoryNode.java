@@ -26,4 +26,6 @@ public class DirectoryNode {
      */
     private List<DirectoryNode> children;
 
+    private String id;
+
 }

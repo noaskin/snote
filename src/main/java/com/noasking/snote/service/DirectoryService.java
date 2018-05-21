@@ -35,7 +35,8 @@ public class DirectoryService {
         DirectoryNode rootNode = new DirectoryNode();
         File file = new File(url);
         rootNode.setPath(Const.FILE_SEPARATOR);
-        rootNode.setName("");
+        rootNode.setName(pathProperties.getName());
+        rootNode.setId("D");
         rootNode.setChildren(list(file, rootNode));
         return rootNode;
     }
@@ -49,6 +50,7 @@ public class DirectoryService {
 
     private List<DirectoryNode> list(File file, DirectoryNode parentSummaryNode) {
         List<DirectoryNode> result = new ArrayList<>();
+        int i = 0;
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
                 File readmeFile = new File(f.getPath() + Const.FILE_SEPARATOR + Const.DEFAULT_TEXT_NAME);
@@ -56,11 +58,12 @@ public class DirectoryService {
                     DirectoryNode node = new DirectoryNode();
                     node.setName(f.getName());
 //                    node.setParent(parentSummaryNode);
-                    if(Const.FILE_SEPARATOR.equals(parentSummaryNode.getPath())){
+                    if (Const.FILE_SEPARATOR.equals(parentSummaryNode.getPath())) {
                         node.setPath(Const.FILE_SEPARATOR + f.getName());
-                    }else{
+                    } else {
                         node.setPath(parentSummaryNode.getPath() + Const.FILE_SEPARATOR + f.getName());
                     }
+                    node.setId(parentSummaryNode.getId() + "_" + (++i));
                     node.setChildren(list(f, node));
                     result.add(node);
                 }

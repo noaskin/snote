@@ -34,11 +34,12 @@ $(function () {
  * @param path 文章路径
  */
 function changeArticle(path) {
-    $("#" + getPathId(glogalPath)).addClass("m-menu__item--active"); // 移除上一篇文章的样式
-    if (document.getElementById(getPathId(path)) != null) { //如果目录存在
-        $("#" + getPathId(path)).addClass("m-menu__item--active");
+    $("#" + getIdByPath(glogalPath)).addClass("m-menu__item--active"); // 移除上一篇文章的样式
+    if (document.getElementById(getIdByPath(path)) != null) { //如果目录存在
+        $("#" + getIdByPath(path)).addClass("m-menu__item--active");
     } else {
         path = "/"; // 目录不存在，切换到根目录
+        $("#D").addClass("m-menu__item--active");
     }
     chageMarkdown(path);
     glogalPath = path; //修改全局
@@ -49,14 +50,12 @@ function changeArticle(path) {
  * @param path
  */
 function chageMarkdown(path) {
-    console.log(path.indexOf("/"));
     if (path.indexOf("/") == 0) {
         path = path.replace("/", "");
     }
     if (path.length > 0) {
         path += "/";
     }
-    console.log(path);
     $.get(path + "README.md", function (md) {
         var markdownView;
         markdownView = editormd.markdownToHTML("article-content", {
@@ -81,7 +80,7 @@ function initDirectory() {
         index++;
         localStorage.setItem("cache1_" + "divId_" + index, data.path);
         localStorage.setItem("cache2_" + data.path, "divId_" + index);
-        var dirHtml = "<li class=\"m-menu__section m-menu__section--first\" id=\"" + getPathId(result.path) + "\" >\n" +
+        var dirHtml = "<li class=\"m-menu__section m-menu__section--first\" id=\"" + initMap(result) + "\" >\n" +
             "<h4 class=\"m-menu__section-text\">\n" +
             "Departments\n" +
             "</h4>\n" +
@@ -90,7 +89,7 @@ function initDirectory() {
         for (var i in result.children) {
             var data = result.children[i];
             if (data.children.length > 0) {
-                dirHtml += "<li  id=\"" + getPathId(data.path) + "\" class=\"m-menu__item  m-menu__item--submenu" +
+                dirHtml += "<li  id=\"" + initMap(data) + "\" class=\"m-menu__item  m-menu__item--submenu" +
                     " m-menu__item--open" +
                     " m-menu__item--expanded\"\n" +
                     "aria-haspopup=\"true\" m-menu-submenu-toggle=\"hover\">\n" +
@@ -116,7 +115,7 @@ function initDirectory() {
                 }
                 dirHtml += "</ul></div></li>";
             } else { // 叶子根节点
-                dirHtml += "<li id=\"" + getPathId(data.path) + "\" class=\"m-menu__item \" aria-haspopup=\"true\"" +
+                dirHtml += "<li id=\"" + initMap(data) + "\" class=\"m-menu__item \" aria-haspopup=\"true\"" +
                     "m-menu-link-redirect=\"1\">\n" +
                     "<a onclick=\"changeArticle('" + data.path + "')\" class=\"m-menu__link \">\n" +
                     "<i class=\"m-menu__link-icon flaticon-share\"></i>\n" +
@@ -135,8 +134,31 @@ function initDirectory() {
 
 }
 
-function getPathId(path) {
-    return localStorage.getItem("cache2_"+path);
+var idRelPath = new Map();
+var pathRelId = new Map();
+
+function initMap(path) {
+    idRelPath.put(path.id,path.path);
+    pathRelId.put(path.path,index.id);
+    return path.id;
+}
+
+
+/**
+ * 根据ID获取Path
+ * @param path
+ * @returns {string | null}
+ */
+function getIdByPath(path) {
+    return pathRelId.get(path);
+}
+
+/**
+ * 根据ID获取Path路径
+ * @param id
+ */
+function getPathById(id) {
+    return idRelPath.get(id);
 }
 
 /**
@@ -149,7 +171,7 @@ function getChildDirectory(data, name) {
     var size = data.children.length;
     if (size > 0) {
         result +=
-            "<li  id=\"" + getPathId(data.path) + "\" class=\"m-menu__item  m-menu__item--submenu\"" +
+            "<li  id=\"" + initMap(data) + "\" class=\"m-menu__item  m-menu__item--submenu\"" +
             " aria-haspopup=\"true\"\n" +
             "m-menu-submenu-toggle=\"hover\" m-menu-link-redirect=\"1\">\n" +
             "<a onclick=\"changeArticle('" + data.path + "')\" class=\"m-menu__link m-menu__toggle\">\n" +
@@ -167,7 +189,7 @@ function getChildDirectory(data, name) {
         result += "</ul></div></li>";
     } else { // 叶子节点
         result +=
-            "<li  id=\"" + getPathId(data.path) + "\" class=\"m-menu__item \" aria-haspopup=\"true\"" +
+            "<li  id=\"" + initMap(data) + "\" class=\"m-menu__item \" aria-haspopup=\"true\"" +
             " m-menu-link-redirect=\"1\">\n" +
             "<a onclick=\"changeArticle('" + data.path + "')\" class=\"m-menu__link \">\n" +
             "<span class=\"m-menu__link-text\">\n" +
@@ -207,30 +229,30 @@ function setArticleTitle(path) {
  * @param path
  */
 function setContent(path) {
-    var jqueryId = "#" + getPathId(path);
-    var words = path.split('/');
+    $("#content-list").html("");
+    var id = getIdByPath(path);
+    var words = id.substr(2,id.length).split('_');
 
     var listHtml = "<li class=\"m-nav__item m-nav__item--home\">\n" +
         "                                <a href=\"#\" class=\"m-nav__link m-nav__link--icon\">\n" +
         "                                    <i class=\"m-nav__link-icon la la-home\"></i>\n" +
         "                                </a>\n" +
         "                            </li>";
-    var cur = "";
+    var curId = "D";
     for (var i in words) {
-        cur += "/" + words[i];
+        curId += "_" + words[i];
         listHtml += "<li class=\"m-nav__separator\">\n" +
             "                                -\n" +
             "                            </li>\n" +
             "                            <li class=\"m-nav__item\">\n" +
-            "                                <a onclick=\"articleOnclick('" + cur + "')\"" +
+            "                                <a onclick=\"articleOnclick('" + curId + "')\"" +
             " class=\"m-nav__link\">\n" +
             "\t\t\t\t\t\t\t\t\t\t\t<span class=\"m-nav__link-text\">\n" +
-            words[i] +
+            getPathById(curId) +
             "\t\t\t\t\t\t\t\t\t\t\t</span>\n" +
             "                                </a>\n" +
             "                            </li>";
     }
-    $("#content-list").html("");
     $("#content-list").html(listHtml);
 
 
@@ -241,11 +263,11 @@ function setContent(path) {
     $(jqueryId).par
 
 
-    $("#" + getPathId(path))
+    $("#" + getIdByPath(path))
 }
 
-function articleOnclick(path) {
-    $("#" + getPathId(path)).children("a").click();
+function articleOnclick(id) {
+    $("#" + getIdByPath(id)).children("a").click();
 }
 
 

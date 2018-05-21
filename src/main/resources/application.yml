@@ -1,6 +1,7 @@
 # 本地配置
 
 snote:
+  name: 你好书籍
   path:
     url: D:/var/snote #本地资源文件路径
 
